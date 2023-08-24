@@ -1,19 +1,35 @@
 #include <stdio.h>
+#include <vector>
 #include "lexer.hpp"
+
+struct Statement {
+
+};
+
+struct Function {
+    int ident;
+    int returnIdent;
+    Statement statement;
+};
+
+struct Program {
+    std::vector<Function> functions;
+};
 
 struct Parser {
     Lexer* lexer;
     Token currentToken;
     Token peekToken;
 
-    void parseProgram();
+    Program parseProgram();
     void next();
-    Token expect(int type);
+    void expect(int type);
 
-    void parseFunction(Token returnIdent, Token nameIdent);
+    Function parseFunction(Token returnIdent, Token nameIdent);
 };
 
-void Parser::parseProgram() {
+Program Parser::parseProgram() {
+    Program prog;
     currentToken = lexer->nextToken();
     peekToken = lexer->nextToken();
     while (currentToken.type != TOKEN_EOF) {
@@ -24,7 +40,8 @@ void Parser::parseProgram() {
                 Token nameIdent = currentToken;
 
                 if (peekToken.type == TOKEN_LPAREN) {
-                    parseFunction(typeIdent, nameIdent);
+                    Function func = parseFunction(typeIdent, nameIdent);
+                    prog.functions.push_back(func);
                 } else if (peekToken.type == TOKEN_SEMICOLON) {
                     // parse global variable here
                 }
@@ -35,6 +52,8 @@ void Parser::parseProgram() {
             }
         };
     }
+
+    return prog;
 }
 
 void Parser::next() {
@@ -42,15 +61,28 @@ void Parser::next() {
     peekToken = lexer->nextToken();
 }
 
-Token Parser::expect(int type) {
+void Parser::expect(int type) {
     if (peekToken.type != type) {
-        printf("expected type: %d, got type %d", type, peekToken.type);
+        printf("expected type: %d, got type %d\n", type, peekToken.type);
     }
     next();
 }
 
-void parseFunction(Token returnIdent, Token nameIdent) {
+Function Parser::parseFunction(Token returnIdent, Token nameIdent) {
+    Function func;
+    func.ident = nameIdent.value;
+    func.returnIdent = returnIdent.value;
     next();
+    // LPAREN is current token here
+    while (peekToken.type != TOKEN_RPAREN) {
+        next();
+    }
+    next();
+    // RPAREN is current Token
+
+    // parse block statement here
+
+    return func;
 }
 
 int main() {
@@ -65,5 +97,6 @@ int main() {
     Parser parser;
     parser.lexer = &lexer;
 
-    parser.parseProgram();
+    Program prog = parser.parseProgram();
+    printf("Function count: %d\n", prog.functions.size());
 }
