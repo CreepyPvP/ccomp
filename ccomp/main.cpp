@@ -6,6 +6,10 @@ struct Statement {
 
 };
 
+struct Expression {
+
+};
+
 struct Function {
     int ident;
     int returnIdent;
@@ -26,6 +30,9 @@ struct Parser {
     void expect(int type);
 
     Function parseFunction(Token returnIdent, Token nameIdent);
+    Statement parseBlockStatement();
+    Statement parseStatement();
+    Expression parseExpression();
 };
 
 Program Parser::parseProgram() {
@@ -74,15 +81,41 @@ Function Parser::parseFunction(Token returnIdent, Token nameIdent) {
     func.returnIdent = returnIdent.value;
     next();
     // LPAREN is current token here
-    while (peekToken.type != TOKEN_RPAREN) {
+    while (currentToken.type != TOKEN_RPAREN) {
         next();
     }
-    next();
-    // RPAREN is current Token
-
-    // parse block statement here
-
+    Statement stmt = parseBlockStatement();
     return func;
+}
+
+Statement Parser::parseStatement() {
+    Statement stmt;
+    switch (peekToken.type) {
+        case TOKEN_LBRACKET: {
+            stmt = parseBlockStatement();
+        }
+        default: {
+            // TODO
+            Expression expr = parseExpression();
+        }
+    }
+
+    return stmt;
+}
+
+Statement Parser::parseBlockStatement() {
+    expect(TOKEN_LBRACKET);
+    Statement stmt;
+    while (peekToken.type != TOKEN_RBRACKET) {
+        parseStatement();
+    }
+    return stmt;
+}
+
+Expression Parser::parseExpression() {
+    Expression expr;
+    // TODO
+    return expr;
 }
 
 int main() {
@@ -94,11 +127,6 @@ int main() {
     lexer.idents.capacity = 100;
     lexer.idents.init();
 
-    // Token currentToken = lexer.nextToken();
-    // while (currentToken.type != TOKEN_EOF) {
-    //     printf("token: %d\n", currentToken.type);
-    //     currentToken = lexer.nextToken();
-    // }
     Parser parser;
     parser.lexer = &lexer;
 
