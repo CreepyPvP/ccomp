@@ -94,6 +94,11 @@ int main() {
     lexer.idents.capacity = 100;
     lexer.idents.init();
 
+    // Token currentToken = lexer.nextToken();
+    // while (currentToken.type != TOKEN_EOF) {
+    //     printf("token: %d\n", currentToken.type);
+    //     currentToken = lexer.nextToken();
+    // }
     Parser parser;
     parser.lexer = &lexer;
 

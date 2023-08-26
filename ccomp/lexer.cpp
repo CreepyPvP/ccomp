@@ -64,9 +64,11 @@ Token Lexer::nextToken() {
             if (isLetter()) {
                 result.type = TOKEN_IDENT;
                 result.value = readIdent();
+                return result;
             } else if (isNumber()) {
                 result.type = TOKEN_NUMBER;
                 result.value = readNumber();
+                return result;
             }
         }
             
