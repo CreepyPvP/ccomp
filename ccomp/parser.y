@@ -25,12 +25,13 @@ expr:
     expr '-' expr { $$ = prog.createOpExpr($1, 1, $3); } |
     expr '*' expr { $$ = prog.createOpExpr($1, 2, $3); } |
     expr '/' expr { $$ = prog.createOpExpr($1, 3, $3); } |
+    '(' expr ')' { $$ = $2; } |
     NUM;
 
 %%
 
 int yylex (void) {
-    const char* input = "4+3*2";
+    const char* input = "(4+3)*2";
     static int index = 0;
     char c = input[index];
     if (c) {
