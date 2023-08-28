@@ -1,50 +1,48 @@
-/* Reverse Polish Notation calculator. */
-
 %{
-  #include "parser.hpp"
+    #include <stdio.h>
+    #include "parser.hpp"
+    #include "ast.hpp"
+
+    int yylex(void);
+    void yyerror(const char*);
+
+    static Program prog;
 %}
 
+%glr-parser
+%left '+' '-'
+%left '*' '/'
+
 %token NUM
-%define api.value.type {double}
+%define api.value.type {int}
 
-%% /* Grammar rules and actions follow. */
+%%
 input:
-  %empty
-| input line
-;
+    expr;
 
-line:
-  '\n'
-| exp '\n'      { printf ("%.10g\n", $1); }
-;
+expr:
+    expr '+' expr { $$ = prog.createOpExpr($1, 0, $3); } |
+    expr '-' expr { $$ = prog.createOpExpr($1, 1, $3); } |
+    expr '*' expr { $$ = prog.createOpExpr($1, 2, $3); } |
+    expr '/' expr { $$ = prog.createOpExpr($1, 3, $3); } |
+    NUM;
 
-exp:
-  NUM
-| exp exp '+'   { $$ = $1 + $2;      }
-| exp exp '-'   { $$ = $1 - $2;      }
-| exp exp '*'   { $$ = $1 * $2;      }
-| exp exp '/'   { $$ = $1 / $2;      }
-| exp exp '^'   { $$ = pow ($1, $2); }  /* Exponentiation */
-| exp 'n'       { $$ = -$1;          }  /* Unary minus   */
-;
 %%
 
 int yylex (void) {
-  int c = getchar ();
-  while (c == ' ' || c == '\t')
-    c = getchar ();
-  if (c == '.' || isdigit (c))
-    {
-      ungetc (c, stdin);
-#pragma warning(suppress : 4996)
-      if (scanf ("%lf", &yylval) != 1)
-        abort ();
-      return NUM;
+    const char* input = "4+4";
+    static int index = 0;
+    char c = input[index];
+    if (c) {
+        ++index;
+        char numValue = c - '0';
+        if (numValue <= 9 && numValue >= 0) {
+            yylval = prog.createNumLiteral(numValue);
+            return NUM;
+        }
+        return c;
     }
-  else if (c == EOF)
     return YYEOF;
-  else
-    return c;
 }
 
 void yyerror (char const *s) {

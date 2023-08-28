@@ -6,3 +6,7 @@ Because i was bored.
 ## Does it work
 No. Still WIP
 
+## Build
+bison ccomp/parser.y -o ccomp/parser.tab.cpp --header=ccomp/parser.hpp
+
+bison ccomp/parser.y -o ccomp/parser.tab.cpp --header=ccomp/parser.hpp  -Wcounterexamples
