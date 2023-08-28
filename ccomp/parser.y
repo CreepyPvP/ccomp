@@ -18,7 +18,7 @@
 
 %%
 input:
-    expr;
+    expr { prog.print(); };
 
 expr:
     expr '+' expr { $$ = prog.createOpExpr($1, 0, $3); } |
@@ -30,7 +30,7 @@ expr:
 %%
 
 int yylex (void) {
-    const char* input = "4+4";
+    const char* input = "4+3*2";
     static int index = 0;
     char c = input[index];
     if (c) {

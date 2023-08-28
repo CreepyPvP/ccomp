@@ -28,6 +28,7 @@ struct Expr {
 struct Program {
     std::vector<Expr> expressions;
 
+    void print();
     ExprRef createExpr(Expr expr);
     Expr* getExpr(ExprRef ref);
 

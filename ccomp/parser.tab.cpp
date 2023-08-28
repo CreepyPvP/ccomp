@@ -947,32 +947,38 @@ yyuserAction (yyRuleNum yyrule, int yyrhslen, yyGLRStackItem* yyvsp,
   YY_REDUCE_PRINT ((yynormal || yyk == -1, yyvsp, yyk, yyrule));
   switch (yyrule)
     {
+  case 2: /* input: expr  */
+#line 21 "ccomp/parser.y"
+         { prog.print(); }
+#line 954 "ccomp/parser.tab.cpp"
+    break;
+
   case 3: /* expr: expr '+' expr  */
 #line 24 "ccomp/parser.y"
                   { (*yyvalp) = prog.createOpExpr(YY_CAST (yyGLRStackItem const *, yyvsp)[YYFILL (-2)].yystate.yysemantics.yyval, 0, YY_CAST (yyGLRStackItem const *, yyvsp)[YYFILL (0)].yystate.yysemantics.yyval); }
-#line 954 "ccomp/parser.tab.cpp"
+#line 960 "ccomp/parser.tab.cpp"
     break;
 
   case 4: /* expr: expr '-' expr  */
 #line 25 "ccomp/parser.y"
                   { (*yyvalp) = prog.createOpExpr(YY_CAST (yyGLRStackItem const *, yyvsp)[YYFILL (-2)].yystate.yysemantics.yyval, 1, YY_CAST (yyGLRStackItem const *, yyvsp)[YYFILL (0)].yystate.yysemantics.yyval); }
-#line 960 "ccomp/parser.tab.cpp"
+#line 966 "ccomp/parser.tab.cpp"
     break;
 
   case 5: /* expr: expr '*' expr  */
 #line 26 "ccomp/parser.y"
                   { (*yyvalp) = prog.createOpExpr(YY_CAST (yyGLRStackItem const *, yyvsp)[YYFILL (-2)].yystate.yysemantics.yyval, 2, YY_CAST (yyGLRStackItem const *, yyvsp)[YYFILL (0)].yystate.yysemantics.yyval); }
-#line 966 "ccomp/parser.tab.cpp"
+#line 972 "ccomp/parser.tab.cpp"
     break;
 
   case 6: /* expr: expr '/' expr  */
 #line 27 "ccomp/parser.y"
                   { (*yyvalp) = prog.createOpExpr(YY_CAST (yyGLRStackItem const *, yyvsp)[YYFILL (-2)].yystate.yysemantics.yyval, 3, YY_CAST (yyGLRStackItem const *, yyvsp)[YYFILL (0)].yystate.yysemantics.yyval); }
-#line 972 "ccomp/parser.tab.cpp"
+#line 978 "ccomp/parser.tab.cpp"
     break;
 
 
-#line 976 "ccomp/parser.tab.cpp"
+#line 982 "ccomp/parser.tab.cpp"
 
       default: break;
     }
@@ -2499,7 +2505,7 @@ yypdumpstack (yyGLRStack* yystackp)
 
 
 int yylex (void) {
-    const char* input = "4+4";
+    const char* input = "4+3*2";
     static int index = 0;
     char c = input[index];
     if (c) {
